@@ -38,8 +38,24 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public void save(List<User> users) {
+        Session session = getSession();
+        session.getTransaction().begin();
+        for (User user:users) {
+            session.saveOrUpdate(user);
+        }
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    @Override
     public List<User> getByCriterion(Criterion criterion) {
-        throw new UnsupportedOperationException();
+        Session session = getSession();
+        Criteria criteria = session.createCriteria(User.class);
+        criteria.add(criterion);
+        List<User> users = criteria.list();
+        session.close();
+        return users;
     }
 
     private Session getSession(){

@@ -14,5 +14,7 @@ public interface UserDao {
 
     void save(User user);
 
+    void save(List<User> users);
+
     List<User> getByCriterion(Criterion criterion);
 }

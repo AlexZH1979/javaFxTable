@@ -20,14 +20,19 @@ import org.hibernate.Session;
 import ru.yandex.zhmyd.dao.UserDao;
 import ru.yandex.zhmyd.dao.impl.UserDaoImpl;
 import ru.yandex.zhmyd.entity.User;
+import ru.yandex.zhmyd.service.UserService;
+import ru.yandex.zhmyd.service.impl.UserServiceImpl;
 
 import java.util.List;
+
+import static javafx.geometry.Pos.CENTER;
+import static javafx.geometry.Pos.TOP_CENTER;
 
 public class App extends Application
 {
     private TableView table = new TableView();
 
-    private UserDao dao = new UserDaoImpl();
+    private UserService service = new UserServiceImpl();
 
     private final ObservableList<User> data = FXCollections.observableArrayList();
 
@@ -38,8 +43,8 @@ public class App extends Application
 
     public void start(Stage stage) throws Exception {
 
-        List<User> users = dao.getAll();
-        data.addAll(users);
+/*        List<User> users = dao.getAll();
+        data.addAll(users);*/
 
         Scene scene = new Scene(new Group());
         stage.setTitle("Table View Sample");
@@ -109,8 +114,10 @@ public class App extends Application
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                data.add(new User(
-                        addFirstName.getText(),
+                String firstName =  addFirstName.getText();
+                String lastName =  addLastName.getText();
+                if(!firstName.isEmpty())
+                data.add(new User(firstName,
                         addLastName.getText(),
                         addEmail.getText()));
                 addFirstName.clear();
@@ -123,18 +130,43 @@ public class App extends Application
         save.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                for (User user:data) {
-                    dao.save(user);
-                }
+                service.save(data);
+            }
+        });
+
+        final Button refresh = new Button("Refresh");
+        refresh.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                data.clear();
+                data.addAll(service.getAll());
             }
         });
 
         HBox hBox = new HBox();
-        hBox.getChildren().addAll(addFirstName, addLastName, addEmail, button, save);
+        hBox.getChildren().addAll(addFirstName, addLastName, addEmail, button, save, refresh);
+
+
+        final TextField query = new TextField();
+        query.setPromptText("Query");
+
+        final Button s = new Button("Refresh");
+        s.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                data.clear();
+                data.addAll(service.getByParameter("firstName",query.getText()));
+            }
+        });
+
+        HBox search = new HBox();
+        search.getChildren().addAll(query,s);
+
         final VBox vbox = new VBox();
+        vbox.setFillWidth(true);
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 0, 0, 10));
-        vbox.getChildren().addAll(table,hBox);
+        vbox.getChildren().addAll(table,hBox, search);
 
         ((Group) scene.getRoot()).getChildren().addAll(vbox);
 
