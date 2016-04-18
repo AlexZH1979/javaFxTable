@@ -15,21 +15,21 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import ru.yandex.zhmyd.dao.UserDao;
+import ru.yandex.zhmyd.dao.impl.UserDaoImpl;
 import ru.yandex.zhmyd.entity.User;
+
+import java.util.List;
 
 public class App extends Application
 {
     private TableView table = new TableView();
 
-    private final ObservableList<User> data =
-            FXCollections.observableArrayList(
-                    new User("Jacob", "Smith", "jacob.smith@example.com"),
-                    new User("Isabella", "Johnson", "isabella.johnson@example.com"),
-                    new User("Ethan", "Williams", "ethan.williams@example.com"),
-                    new User("Emma", "Jones", "emma.jones@example.com"),
-                    new User("Michael", "Brown", "michael.brown@example.com")
-            );
+    private UserDao dao = new UserDaoImpl();
+
+    private final ObservableList<User> data = FXCollections.observableArrayList();
 
     public static void main( String[] args )
     {
@@ -38,7 +38,8 @@ public class App extends Application
 
     public void start(Stage stage) throws Exception {
 
-        HibernateUtil.getSessionFactory();
+        List<User> users = dao.getAll();
+        data.addAll(users);
 
         Scene scene = new Scene(new Group());
         stage.setTitle("Table View Sample");
@@ -47,12 +48,7 @@ public class App extends Application
 
         final Label label = new Label("Address Book");
         label.setFont(new Font("Arial", 20));
-/*
 
-
-
-
- */
         table.setEditable(true);
 
         TableColumn firstNameCol = new TableColumn("First Name");
@@ -123,8 +119,18 @@ public class App extends Application
             }
         });
 
+        final Button save = new Button("Save");
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                for (User user:data) {
+                    dao.save(user);
+                }
+            }
+        });
+
         HBox hBox = new HBox();
-        hBox.getChildren().addAll(addFirstName, addLastName, addEmail, button);
+        hBox.getChildren().addAll(addFirstName, addLastName, addEmail, button, save);
         final VBox vbox = new VBox();
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10, 0, 0, 10));

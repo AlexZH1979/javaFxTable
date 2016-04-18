@@ -4,9 +4,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
-import ru.yandex.zhmyd.entity.Entity;
+import ru.yandex.zhmyd.entity.User;
 
-class EditingCell extends TableCell<Entity, String> {
+class EditingCell extends TableCell<User, String> {
 
     private TextField textField;
 
