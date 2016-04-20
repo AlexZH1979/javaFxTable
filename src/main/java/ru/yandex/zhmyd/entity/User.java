@@ -1,9 +1,6 @@
 package ru.yandex.zhmyd.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class User {
@@ -14,6 +11,10 @@ public class User {
     private String firstName;
     private String lastName;
     private  String email;
+
+    @ManyToOne
+    @JoinColumn(name = "dep_id")
+    private Department department;
 
     public User() {
     }
@@ -54,5 +55,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 }
