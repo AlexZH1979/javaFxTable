@@ -4,10 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
@@ -18,13 +15,13 @@ import ru.yandex.zhmyd.service.UserService;
 import ru.yandex.zhmyd.service.impl.UserServiceImpl;
 import ru.yandex.zhmyd.view.Views;
 
-public class UserTableView implements Views {
+public class UserTableView {
 
     private UserService service = new UserServiceImpl();
 
     private TableView table = new TableView();
 
-    public Pane buildPane(final ObservableList<User> data){
+    public Control buildPane(final ObservableList<User> data){
         table.setEditable(true);
 
         TableColumn firstNameCol = new TableColumn("First Name");
@@ -60,6 +57,7 @@ public class UserTableView implements Views {
                 }
         );
 
+
         lastNameCol.setCellValueFactory(
                 new PropertyValueFactory<User,String>("lastName")
         );
@@ -71,9 +69,14 @@ public class UserTableView implements Views {
                 ).setLastName(t.getNewValue());
             }
         });
+
+
+
         emailCol.setCellValueFactory(
                 new PropertyValueFactory<User,String>("email")
         );
+
+
 
         table.getColumns().addAll(firstNameCol, lastNameCol, emailCol);
 
@@ -132,12 +135,6 @@ public class UserTableView implements Views {
         HBox search = new HBox();
         search.getChildren().addAll(query,s);
 
-        final VBox vbox = new VBox();
-        vbox.setFillWidth(true);
-        vbox.setSpacing(5);
-        vbox.setPadding(new Insets(10, 0, 0, 10));
-        vbox.getChildren().addAll(table,hBox, search);
-
-        return vbox;
+        return table;
     }
 }

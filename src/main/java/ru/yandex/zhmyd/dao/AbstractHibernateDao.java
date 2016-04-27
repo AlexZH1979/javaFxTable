@@ -13,9 +13,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by USER on 20.04.2016.
- */
 public abstract class AbstractHibernateDao<T, PK extends Serializable> implements GenericDao<T, PK> {
 
     private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
@@ -34,19 +31,29 @@ public abstract class AbstractHibernateDao<T, PK extends Serializable> implement
     @Override
     public PK save(T obj) {
         Session session=getSession();
-        return (PK) session.save(obj);
+        session.getTransaction().begin();
+        PK pk = (PK) session.save(obj);
+        session.getTransaction().commit();
+        return pk;
     }
 
     @Override
     public void update(T o) {
-        getSession().update(o);
+        Session session=getSession();
+        session.getTransaction().begin();
+        session.update(o);
+        session.getTransaction().commit();
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public List<T> getAll() {
-        Criteria cr = getSession().createCriteria(this.getGenericEntityClass());
-        return (List<T>) cr.list();
+        Session session=getSession();
+        session.getTransaction().begin();
+        Criteria cr = session.createCriteria(this.getGenericEntityClass());
+        List<T> list =(List<T>) cr.list();
+        session.getTransaction().commit();
+        return list;
     }
     @Override
     public Long getLength(){
@@ -56,7 +63,9 @@ public abstract class AbstractHibernateDao<T, PK extends Serializable> implement
     @SuppressWarnings("unchecked")
     @Override
     public List<T> getByCriteria(Criterion criterion) {
-        Criteria criteria = getSession().createCriteria(this.getGenericEntityClass());
+        Session session=getSession();
+        session.getTransaction().begin();
+        Criteria criteria =session.createCriteria(this.getGenericEntityClass());
         criteria.add(criterion);
         return (List<T>) criteria.list();
     }
@@ -72,6 +81,8 @@ public abstract class AbstractHibernateDao<T, PK extends Serializable> implement
     @SuppressWarnings("unchecked")
     @Override
     public List<T> getByCriteria(Criterion criterion, int begin, int count) {
+        Session session=getSession();
+        session.getTransaction().begin();
         if(begin< 0 ||count<0){
             return new ArrayList<T>();
         }
@@ -80,6 +91,7 @@ public abstract class AbstractHibernateDao<T, PK extends Serializable> implement
             criteria.add(criterion);
         }
         criteria.setFirstResult(begin).setMaxResults(count);
+
         return (List<T>)criteria.list();
     }
 
@@ -92,25 +104,31 @@ public abstract class AbstractHibernateDao<T, PK extends Serializable> implement
     @SuppressWarnings("unchecked")
     @Override
     public void delete(PK id) {
-        T persistentObject = (T) getSession().load(this.getGenericEntityClass(), id);
+        Session session=getSession();
+        session.getTransaction().begin();
+        T persistentObject = (T) session.load(this.getGenericEntityClass(), id);
         try {
-            getSession().delete(persistentObject);
+            session.delete(persistentObject);
         } catch (NonUniqueObjectException e) {
             // in a case of detached object
             T instance = (T) getSession().merge(persistentObject);
-            getSession().delete(instance);
+            session.delete(instance);
         }
+        session.getTransaction().commit();
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void delete(T persistentObject) {
+        Session session=getSession();
+        session.getTransaction().begin();
         try {
-            getSession().delete(persistentObject);
+            session.delete(persistentObject);
         } catch (NonUniqueObjectException e) {
             // in a case of detached object
-            T instance = (T) getSession().merge(persistentObject);
-            getSession().delete(instance);
+            T instance = (T) session.merge(persistentObject);
+            session.delete(instance);
         }
+        session.getTransaction().commit();
     }
 }

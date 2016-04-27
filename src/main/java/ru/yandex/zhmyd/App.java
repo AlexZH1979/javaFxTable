@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import ru.yandex.zhmyd.entity.User;
 import ru.yandex.zhmyd.view.Views;
 import ru.yandex.zhmyd.view.impl.UserTableView;
+import ru.yandex.zhmyd.view.impl.Window;
 
 public class App extends Application{
 
@@ -40,7 +41,7 @@ public class App extends Application{
     }
 
     private Pane initLayout(){
-        Views views = new UserTableView();
+        Views views = new Window();
         return views.buildPane(data);
     }
 }

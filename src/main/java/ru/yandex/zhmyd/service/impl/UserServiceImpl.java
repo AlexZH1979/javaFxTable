@@ -8,11 +8,15 @@ import ru.yandex.zhmyd.dao.impl.UserDaoImpl;
 import ru.yandex.zhmyd.entity.User;
 import ru.yandex.zhmyd.service.UserService;
 
+import javax.inject.Inject;
 import java.util.List;
 
 public class UserServiceImpl implements UserService{
 
-    private UserDao dao = new UserDaoImpl();
+    @Inject
+    public UserDao dao;
+
+
 
     @Override
     public List<User> getAll() {
@@ -21,13 +25,15 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void save(List<User> data) {
-        dao.save(data);
+        for(User user:data) {
+            dao.save(user);
+        }
     }
 
     @Override
     public List<User> getByParameter(String key, String value) {
         Criterion criterion = Restrictions.eq(key, value);
-        return dao.getByCriterion(criterion);
+        return dao.getByCriteria(criterion);
     }
 
 

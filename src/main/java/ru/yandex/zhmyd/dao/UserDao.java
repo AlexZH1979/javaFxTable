@@ -6,15 +6,6 @@ import ru.yandex.zhmyd.entity.User;
 
 import java.util.List;
 
-public interface UserDao {
+public interface UserDao extends GenericDao<User, Integer>{
 
-    User getById(Integer id);
-
-    List<User> getAll();
-
-    void save(User user);
-
-    void save(List<User> users);
-
-    List<User> getByCriterion(Criterion criterion);
 }
