@@ -28,10 +28,10 @@ public class Window implements Views {
         ChangedButton newUserView = new ChangedButton(newTableView.buildPane(data));
 
         HBox cont = new HBox();
-
         cont.getChildren().addAll(userView, newUserView);
-        userView.setText("User Table");
 
+
+        userView.setText("User Table");
         userView.setOnAction(
                 e -> {
                     vbox.getChildren().clear();
