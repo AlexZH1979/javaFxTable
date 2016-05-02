@@ -1,4 +1,4 @@
-package ru.yandex.zhmyd.view.impl;
+package ru.yandex.zhmyd.view.controls;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;

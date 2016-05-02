@@ -2,13 +2,12 @@ package ru.yandex.zhmyd.view.impl;
 
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import ru.yandex.zhmyd.entity.User;
 import ru.yandex.zhmyd.view.Views;
+import ru.yandex.zhmyd.view.controls.ChangedButton;
 
 /**
  * Created by USER on 27.04.2016.
